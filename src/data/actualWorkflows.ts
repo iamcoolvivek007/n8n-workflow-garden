@@ -57,7 +57,7 @@ function convertN8nWorkflow(n8nWorkflow: any): Workflow {
     return type.replace('n8n-nodes-base.', '').replace('@n8n/n8n-nodes-langchain.', '');
   }) || [];
   
-  const uniqueNodeTypes = [...new Set(nodeTypes)].filter(Boolean).slice(0, 5); // Limit to 5 tags
+  const uniqueNodeTypes: string[] = [...new Set(nodeTypes)].filter(Boolean).slice(0, 5); // Limit to 5 tags
   
   return {
     id: n8nWorkflow.id,

@@ -3,16 +3,15 @@ export interface Workflow {
   id: string;
   name: string;
   description: string;
-  category: 'integration' | 'automation' | 'data-processing' | 'notification' | 'ai-ml' | 'marketing' | 'crm' | 'e-commerce' | 'monitoring' | 'social-media';
+  category: string;
   tags: string[];
   complexity: 'Simple' | 'Medium' | 'Complex';
   nodeCount: number;
   lastModified: string;
   author: string;
   version: string;
-  connectors: string[];
-  useCase: string;
-  estimatedSetupTime: string;
+  isActive: boolean;
+  nodes: any[];
 }
 
 export interface WorkflowStats {

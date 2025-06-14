@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Input } from "@/components/ui/input"
 import { Search } from 'lucide-react';
@@ -32,13 +33,6 @@ const Index = () => {
       }
     });
 
-  const stats = {
-    total: actualWorkflows.length,
-    active: actualWorkflows.filter(w => w.isActive).length,
-    categories: new Set(actualWorkflows.map(w => w.category)).size,
-    avgNodes: Math.round(actualWorkflows.reduce((sum, w) => sum + w.nodeCount, 0) / actualWorkflows.length)
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       <div className="container mx-auto px-4 py-8">
@@ -51,7 +45,12 @@ const Index = () => {
           </p>
         </div>
 
-        <StatsOverview stats={stats} />
+        <StatsOverview 
+          total={actualWorkflows.length}
+          active={actualWorkflows.filter(w => w.isActive).length}
+          categories={new Set(actualWorkflows.map(w => w.category)).size}
+          avgNodes={Math.round(actualWorkflows.reduce((sum, w) => sum + w.nodeCount, 0) / actualWorkflows.length)}
+        />
 
         <div className="flex flex-col md:flex-row gap-4 mb-6">
           <div className="relative flex-1">
