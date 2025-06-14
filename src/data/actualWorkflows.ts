@@ -45,19 +45,48 @@ function getComplexity(nodeCount: number): 'Simple' | 'Medium' | 'Complex' {
   return 'Complex';
 }
 
+// Helper function to generate use case based on category and name
+function generateUseCase(category: string, name: string): string {
+  const useCases: Record<string, string> = {
+    'E-commerce': 'Streamline online store operations and customer management',
+    'Payments': 'Automate payment processing and financial workflows',
+    'Email & Communication': 'Enhance communication and email automation',
+    'Communication': 'Improve team communication and messaging workflows',
+    'AI & Machine Learning': 'Leverage AI for data processing and intelligent automation',
+    'Project Management': 'Optimize project tracking and task management',
+    'Data Processing': 'Automate data transformation and analysis workflows',
+    'API & Webhooks': 'Integrate systems through APIs and webhook automation',
+    'CRM & Database': 'Manage customer relationships and database operations',
+    'Utilities': 'Provide helpful utilities and workflow assistance',
+    'General': 'General purpose automation and workflow management'
+  };
+  return useCases[category] || 'Automated workflow for enhanced productivity';
+}
+
+// Helper function to estimate setup time based on complexity
+function getEstimatedSetupTime(complexity: 'Simple' | 'Medium' | 'Complex'): string {
+  switch (complexity) {
+    case 'Simple': return '10-15 min';
+    case 'Medium': return '20-30 min';
+    case 'Complex': return '45-60 min';
+    default: return '15-30 min';
+  }
+}
+
 // Convert n8n workflows to our Workflow type
 function convertN8nWorkflow(n8nWorkflow: any): Workflow {
   const nodeCount = n8nWorkflow.nodes?.length || 0;
   const category = categorizeWorkflow(n8nWorkflow);
   const complexity = getComplexity(nodeCount);
   
-  // Extract unique node types for tags
-  const nodeTypes = n8nWorkflow.nodes?.map((node: any) => {
+  // Extract unique node types for tags and connectors - ensure they are strings
+  const nodeTypes = (n8nWorkflow.nodes || []).map((node: any) => {
     const type = node.type || '';
-    return type.replace('n8n-nodes-base.', '').replace('@n8n/n8n-nodes-langchain.', '');
-  }) || [];
+    return String(type).replace('n8n-nodes-base.', '').replace('@n8n/n8n-nodes-langchain.', '');
+  }).filter(Boolean);
   
-  const uniqueNodeTypes: string[] = [...new Set(nodeTypes)].filter(Boolean).slice(0, 5); // Limit to 5 tags
+  const uniqueNodeTypes: string[] = [...new Set(nodeTypes)].slice(0, 5); // Limit to 5 tags
+  const connectors: string[] = [...new Set(nodeTypes)].slice(0, 4); // Limit to 4 connectors
   
   return {
     id: n8nWorkflow.id,
@@ -68,10 +97,13 @@ function convertN8nWorkflow(n8nWorkflow: any): Workflow {
     nodeCount,
     complexity,
     isActive: n8nWorkflow.active || false,
-    lastModified: new Date().toISOString(), // Use current date as we don't have this info
+    lastModified: new Date().toISOString(),
     version: n8nWorkflow.versionId ? '1.0' : '1.0',
     author: 'n8n User',
-    nodes: n8nWorkflow.nodes || []
+    nodes: n8nWorkflow.nodes || [],
+    useCase: generateUseCase(category, n8nWorkflow.name),
+    estimatedSetupTime: getEstimatedSetupTime(complexity),
+    connectors: connectors
   };
 }
 

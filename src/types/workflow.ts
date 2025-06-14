@@ -12,6 +12,9 @@ export interface Workflow {
   version: string;
   isActive: boolean;
   nodes: any[];
+  useCase: string;
+  estimatedSetupTime: string;
+  connectors: string[];
 }
 
 export interface WorkflowStats {
